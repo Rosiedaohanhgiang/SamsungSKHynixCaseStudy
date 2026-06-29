@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giải Phẫu Khủng Hoảng Đãi Ngộ: Samsung vs SK Hynix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        samsung: '#1428A0',
+                        sk: '#E60012',
+                        dark: {
+                            900: '#0B0F19',
+                            800: '#111827',
+                            700: '#1F2937',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.6s ease-out forwards',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(239, 68, 68, 0.2)' },
+                            '100%': { boxShadow: '0 0 20px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.2)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0B0F19; color: #E5E7EB; overflow-x: hidden; }
+        
+        /* Glassmorphism Utilities */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Tab Navigation Styles */
+        .nav-item { position: relative; transition: all 0.3s ease; }
+        .nav-item::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+            background: #3B82F6; transition: width 0.3s ease;
+        }
+        .nav-active { color: #fff; font-weight: 700; }
+        .nav-active::after { width: 100%; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4B5563; }
+
+        /* Data Bar Animation */
+        .data-bar { transform-origin: left; animation: growBar 1s ease-out forwards; }
+        @keyframes growBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-blue-500/30">
+
+    <header class="sticky top-0 z-50 bg-dark-900/90 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-3 mb-1">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">HR STRATEGY CASE</span>
+                    <span class="text-xs text-slate-400 font-mono">2025 - 2026</span>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">
+                    Giải Phẫu Khủng Hoảng Đãi Ngộ
+                </h1>
+            </div>
+            <div class="flex items-center gap-4 bg-dark-800 p-2 rounded-lg border border-white/5">
+                <div class="flex items-center gap-2 px-3 py-1">
+                    <div class="w-3 h-3 rounded-full bg-samsung shadow-[0_0_10px_#1428A0]"></div>
+                    <span class="text-sm font-bold text-white tracking-wide">SAMSUNG</span>
+                </div>
+                <div class="h-4 w-px bg-white/20"></div>
+                <div class="flex items-center gap-2 px-3 py-1">
+                    <div class="w-3 h-3 rounded-full bg-sk shadow-[0_0_10px_#E60012]"></div>
+                    <span class="text-sm font-bold text-white tracking-wide">SK HYNIX</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-8">
+        
+        <!-- Navigation -->
+        <nav class="flex overflow-x-auto border-b border-white/10 mb-8 pb-1 hide-scrollbar gap-8">
+            <button onclick="switchTab('context')" id="tab-context" class="nav-item nav-active pb-3 text-sm uppercase tracking-wider text-slate-400 hover:text-white whitespace-nowrap flex items-center gap-2">
+                <i data-lucide="book-open" class="w-4 h-4"></i> 1. Bối cảnh & Cú huých
+            </button>
+            <button onclick="switchTab('climax')" id="tab-climax" class="nav-item pb-3 text-sm uppercase tracking-wider text-slate-400 hover:text-white whitespace-nowrap flex items-center gap-2">
+                <i data-lucide="flame" class="w-4 h-4"></i> 2. Hệ quả & Đỉnh điểm
+            </button>
+            <button onclick="switchTab('resolution')" id="tab-resolution" class="nav-item pb-3 text-sm uppercase tracking-wider text-slate-400 hover:text-white whitespace-nowrap flex items-center gap-2">
+                <i data-lucide="handshake" class="w-4 h-4"></i> 3. Thiết kế Thỏa thuận
+            </button>
+            <button onclick="switchTab('lessons')" id="tab-lessons" class="nav-item pb-3 text-sm uppercase tracking-wider text-slate-400 hover:text-white whitespace-nowrap flex items-center gap-2">
+                <i data-lucide="lightbulb" class="w-4 h-4"></i> 4. Bài học Rút ra
+            </button>
+        </nav>
+
+        <!-- TAB 1: BỐI CẢNH & CÚ HUÝCH -->
+        <section id="content-context" class="animate-slide-up space-y-8">
+            
+            <!-- Historical Context Panel -->
+            <div class="glass-card rounded-2xl p-6 md:p-8 relative overflow-hidden group">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl transition-transform group-hover:scale-150 duration-700"></div>
+                
+                <div class="grid md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-7 space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20">
+                            <i data-lucide="cpu" class="w-3 h-3"></i> BỐI CẢNH 2025: KỶ NGUYÊN AI
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white leading-tight">Sự trỗi dậy của HBM và Quyền lực mới của Kẻ Bám Đuổi</h2>
+                        <p class="text-slate-300 leading-relaxed text-sm md:text-base">
+                            Suốt một thập kỷ, Samsung là "Vị vua không ngai" của ngành bán dẫn. Kỹ sư giỏi nhất luôn chọn Samsung. Thậm chí nội bộ Samsung từng mỉa mai gọi SK Hynix là <strong class="text-white bg-white/10 px-2 py-0.5 rounded">"Trường luyện thi Hynix"</strong> - ngụ ý kỹ sư Hynix giỏi lên là sẽ chuyển sang Samsung.
+                        </p>
+                        <p class="text-slate-300 leading-relaxed text-sm md:text-base">
+                            Nhưng cơn sốt AI thay đổi tất cả. SK Hynix bứt phá trở thành đối tác chiến lược cung cấp chip HBM cho Nvidia. Đứng trên đỉnh cao lợi nhuận mới, SK Hynix quyết định "chơi một ván bài lật ngược thế cờ" nhắm thẳng vào điểm yếu cốt lõi của Samsung: <span class="text-red-400 font-semibold underline decoration-red-400/30 underline-offset-4">Cách chia tiền.</span>
+                        </p>
+                    </div>
+                    <div class="md:col-span-5 relative">
+                        <div class="bg-dark-800 p-5 rounded-xl border border-white/10 shadow-2xl relative z-10">
+                            <i data-lucide="quote" class="w-8 h-8 text-slate-600 mb-2"></i>
+                            <p class="text-lg font-medium text-slate-200 italic mb-4">"Chúng tôi không muốn nhân tài của mình coi đây là trạm trung chuyển nữa. Đã đến lúc viết lại luật chơi."</p>
+                            <div class="text-xs text-slate-400 font-mono">- Động lực ngầm của SK Hynix</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Move: September 2025 -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Old Model -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl border-t-4 border-t-slate-500 flex flex-col">
+                    <h3 class="text-xl font-bold text-slate-300 mb-4 flex items-center gap-2">
+                        <i data-lucide="lock" class="w-5 h-5"></i> Mô hình Cũ: Cơ chế "Xin - Cho"
+                    </h3>
+                    <div class="space-y-5 flex-grow">
+                        <!-- Concept -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-400">Trần thưởng chia lợi nhuận</span>
+                                <span class="text-white font-mono">Max 50% Lương năm</span>
+                            </div>
+                            <div class="w-full bg-dark-800 rounded-full h-3">
+                                <div class="bg-slate-500 h-3 rounded-full w-[100%] opacity-50 relative">
+                                    <div class="absolute right-0 top-0 bottom-0 w-1 bg-red-500 shadow-[0_0_10px_#EF4444]"></div>
+                                </div>
+                            </div>
+                            <div class="text-right text-[10px] text-red-400 mt-1 uppercase font-bold tracking-wide">Bức tường Trần thưởng</div>
+                        </div>
+                        
+                        <!-- Concrete Example -->
+                        <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                            <p class="text-xs font-bold text-blue-300 mb-2 uppercase tracking-wider">Ví dụ sự bế tắc:</p>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Kỹ sư có lương cứng 100 triệu Won/năm. <br><br>
+                                • Năm ngoái công ty lãi 10 tỷ <i data-lucide="arrow-right" class="inline w-3 h-3 text-slate-400 mx-1"></i> Thưởng 30 triệu Won.<br>
+                                • Năm nay nhờ cơn sốt AI, công ty <strong>lãi ĐỘT BIẾN x10 lần (100 tỷ)</strong> <i data-lucide="arrow-right" class="inline w-3 h-3 text-slate-400 mx-1"></i> Thưởng cũng chỉ dừng ở <strong>50 triệu Won</strong> (vì bị chặn bởi trần tối đa 50% lương năm).
+                            </p>
+                        </div>
+
+                        <!-- Why it failed -->
+                        <div class="pt-3 border-t border-white/5">
+                            <p class="text-xs font-bold text-slate-400 mb-2 uppercase">Tại sao bỗng dưng lỗi thời?</p>
+                            <ul class="space-y-2 text-sm text-slate-300">
+                                <li class="flex items-start gap-2"><i data-lucide="x" class="w-4 h-4 text-red-400 mt-0.5 shrink-0"></i> <strong>Cắt đứt động lực:</strong> Nhân viên cảm thấy "công ty đang nuốt trọn phần lợi nhuận tăng trưởng vượt bậc", cống hiến bao nhiêu cũng bị trần giới hạn.</li>
+                                <li class="flex items-start gap-2"><i data-lucide="x" class="w-4 h-4 text-red-400 mt-0.5 shrink-0"></i> <strong>Thiếu minh bạch:</strong> Quỹ thưởng phụ thuộc hoàn toàn vào cuộc họp kín cuối năm của Ban lãnh đạo, nhân viên hoàn toàn bị động chờ được ban phát.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SK Hynix Move -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl border-t-4 border-t-sk relative overflow-hidden flex flex-col">
+                    <div class="absolute top-4 right-4 text-xs font-bold bg-red-500/20 text-red-400 px-2 py-1 rounded animate-pulse">THÁNG 9/2025</div>
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i data-lucide="unlock" class="w-5 h-5 text-sk"></i> Nước đi SK Hynix: "Chia Cổ Tức"
+                    </h3>
+                    <div class="space-y-5 flex-grow">
+                        <!-- Concept -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-300">Quỹ thưởng mới (Cam kết 10 năm)</span>
+                                <span class="text-white font-mono font-bold text-sk">10% Lợi nhuận HĐ</span>
+                            </div>
+                            <div class="w-full bg-dark-800 rounded-full h-3 relative">
+                                <div class="bg-gradient-to-r from-red-600 to-orange-500 h-3 rounded-full w-[85%] data-bar shadow-[0_0_10px_#E60012]"></div>
+                                <div class="absolute right-0 top-0 h-3 w-[15%] bg-stripes-red opacity-30"></div>
+                            </div>
+                            <div class="text-right text-[10px] text-emerald-400 mt-1 uppercase font-bold tracking-wide">Bầu trời là giới hạn (No Cap)</div>
+                        </div>
+
+                        <!-- Concrete Example -->
+                        <div class="bg-red-950/30 p-4 rounded-xl border border-red-500/20">
+                            <p class="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider">Hiệu ứng thực tế 2026:</p>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Khi lợi nhuận vọt lên 47,2 nghìn tỷ won, lập tức công thức tự động trích 10% (4,7 nghìn tỷ) vào quỹ. <br><br>
+                                Không cần đàm phán, mỗi nhân sự nhận thẳng trung bình <strong>140 triệu Won (~95.000 USD)</strong> tiền mặt — có người nhận thưởng <strong>cao hơn cả lương năm</strong> của họ.
+                            </p>
+                        </div>
+
+                        <!-- Why it worked -->
+                        <div class="pt-3 border-t border-white/5">
+                            <p class="text-xs font-bold text-sk mb-2 uppercase">Lật ngược thế cờ bằng Cấu trúc</p>
+                            <ul class="space-y-2 text-sm text-slate-300">
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 mt-0.5 shrink-0"></i> <strong>Tính dự đoán tuyệt đối:</strong> Kỹ sư có thể tự mở báo cáo tài chính hàng quý, nhân với 10% và đoán chắc chắn mình sẽ được thưởng bao nhiêu.</li>
+                                <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 mt-0.5 shrink-0"></i> <strong>Tâm thế làm chủ:</strong> Xóa bỏ tâm lý "xin-cho", biến người lao động thành đối tác hưởng thành quả trực tiếp từ siêu chu kỳ AI.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl flex items-start gap-4">
+                <i data-lucide="info" class="w-6 h-6 text-blue-400 shrink-0 mt-0.5"></i>
+                <p class="text-sm text-slate-300">
+                    <strong class="text-blue-300">HR Insight:</strong> Điểm chốt hạ không nằm ở số tiền 95.000 USD, mà nằm ở <strong>cấu trúc</strong>. Người lao động chuyển từ tâm thế "chờ được ban phát" sang "sở hữu một bản hợp đồng bảo chứng" có tính dự đoán cực cao.
+                </p>
+            </div>
+        </section>
+
+        <!-- TAB 2: HỆ QUẢ & ĐỈNH ĐIỂM -->
+        <section id="content-climax" class="hidden animate-slide-up space-y-8">
+            
+            <!-- The Exodus -->
+            <div class="glass-card rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-8">
+                <div class="flex-1 space-y-4">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="users" class="w-6 h-6 text-blue-400"></i> Dòng Người Dịch Chuyển
+                    </h2>
+                    <p class="text-slate-300">
+                        "Khoảng 200 nhân viên đã chuyển sang SK Hynix chỉ trong bốn tháng. Cần đãi ngộ công bằng để giữ người tài."
+                    </p>
+                    <p class="text-sm text-slate-400 italic">- Trích lời ông Choi Seung-ho, Trưởng đơn vị Công đoàn Tập đoàn Samsung</p>
+                    
+                    <div class="mt-4 p-4 bg-dark-800 rounded-lg border border-white/5 relative overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-yellow-500"></div>
+                        <h4 class="text-sm font-bold text-yellow-500 uppercase mb-1">Nghịch lý Samsung</h4>
+                        <p class="text-sm text-slate-300">
+                            Tiền không thiếu! Quý 1/2026, lợi nhuận mảng chip của Samsung <strong class="text-emerald-400">tăng vọt 756%</strong>. Vấn đề duy nhất khiến nhân tài ra đi là <strong>Sự bế tắc trong cơ chế phân phối</strong> (vẫn cãi nhau quanh chuyện trần thưởng).
+                        </p>
+                    </div>
+                </div>
+                <div class="w-48 h-48 rounded-full border-8 border-dark-800 flex flex-col items-center justify-center bg-gradient-to-br from-red-900/50 to-dark-900 shadow-[0_0_30px_rgba(239,68,68,0.2)] shrink-0">
+                    <span class="text-5xl font-black text-white">200<span class="text-3xl text-red-500">+</span></span>
+                    <span class="text-xs text-slate-400 font-mono mt-1 text-center">KỸ SƯ TINH HOA<br>RỜI BỎ</span>
+                </div>
+            </div>
+
+            <!-- Crisis Dashboard -->
+            <div class="border border-red-500/30 bg-red-950/10 rounded-2xl p-6 md:p-8 animate-glow relative">
+                <div class="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 text-red-500 font-bold bg-red-500/10 px-4 py-1 rounded-full border border-red-500/20">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 animate-pulse"></i> NGUY CƠ ĐÌNH CÔNG QUY MÔ LỚN
+                </div>
+                
+                <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Metric 1 -->
+                    <div class="bg-dark-900/50 p-5 rounded-xl border border-red-500/20 flex flex-col items-center text-center">
+                        <i data-lucide="users-2" class="w-8 h-8 text-slate-400 mb-2"></i>
+                        <div class="text-4xl font-black text-white font-mono">61,000</div>
+                        <div class="text-sm font-bold text-slate-400 uppercase mt-1">Người lao động</div>
+                        <p class="text-xs text-slate-500 mt-2">Sẵn sàng đình công trong 18 ngày nếu yêu sách không được đáp ứng.</p>
+                    </div>
+
+                    <!-- Metric 2 -->
+                    <div class="bg-dark-900/50 p-5 rounded-xl border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)] flex flex-col items-center text-center transform scale-105">
+                        <i data-lucide="target" class="w-8 h-8 text-red-400 mb-2"></i>
+                        <div class="text-4xl font-black text-red-500 font-mono">15%</div>
+                        <div class="text-sm font-bold text-slate-400 uppercase mt-1">Lợi nhuận hoạt động</div>
+                        <p class="text-xs text-slate-300 mt-2 font-medium">Yêu sách của Công đoàn: Đòi bỏ trần thưởng và chia cao gấp 3 lần năm trước.</p>
+                    </div>
+
+                    <!-- Metric 3 -->
+                    <div class="bg-dark-900/50 p-5 rounded-xl border border-red-500/20 flex flex-col items-center text-center">
+                        <i data-lucide="trending-down" class="w-8 h-8 text-orange-400 mb-2"></i>
+                        <div class="text-4xl font-black text-orange-400 font-mono">1 Nghìn Tỷ</div>
+                        <div class="text-sm font-bold text-slate-400 uppercase mt-1">Won (~669 Triệu USD)</div>
+                        <p class="text-xs text-slate-500 mt-2">Thiệt hại kinh tế trực tiếp ước tính nếu cuộc đình công xảy ra.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: THIẾT KẾ THỎA THUẬN -->
+        <section id="content-resolution" class="hidden animate-slide-up space-y-8">
+            
+            <div class="text-center space-y-2 mb-8">
+                <div class="inline-block px-3 py-1 rounded bg-slate-800 text-xs font-mono text-slate-400 border border-slate-700">ĐÊM 20 THÁNG 5 NĂM 2026</div>
+                <h2 class="text-3xl font-black text-white">Thỏa Thuận "Nửa Đêm"</h2>
+                <p class="text-emerald-400 font-medium">Đỉnh cao của Nghệ thuật Thiết kế Đãi ngộ: Hào phóng có kiểm soát</p>
+            </div>
+
+            <!-- The Core Deal -->
+            <div class="glass-card rounded-2xl p-6 border border-emerald-500/30 bg-gradient-to-br from-emerald-900/10 to-dark-900">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="flex-1 text-center md:text-left">
+                        <h3 class="text-lg font-bold text-slate-300 mb-2">Con số chốt hạ:</h3>
+                        <div class="text-6xl font-black text-white font-mono tracking-tighter">
+                            10.5<span class="text-3xl text-emerald-400">%</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mt-2 font-mono uppercase">Lợi nhuận hoạt động mảng bán dẫn</p>
+                    </div>
+                    <div class="w-px h-24 bg-white/10 hidden md:block"></div>
+                    <div class="flex-1 space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded bg-emerald-500/20 flex items-center justify-center shrink-0">
+                                <i data-lucide="check" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Chấp nhận yêu cầu cốt lõi</h4>
+                                <p class="text-sm text-slate-300">Gắn thưởng trực tiếp với lợi nhuận hoạt động và chính thức <strong>bỏ trần thưởng</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded bg-blue-500/20 flex items-center justify-center shrink-0">
+                                <i data-lucide="scale" class="w-5 h-5 text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Điểm cân bằng tuyệt hảo</h4>
+                                <p class="text-sm text-slate-300">10.5% thấp hơn mức 15% công đoàn đòi, nhưng nhỉnh hơn 10% của đối thủ SK Hynix để giữ sĩ diện và lợi thế cạnh tranh.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-center text-white mt-12 mb-6">3 Van Điều Tiết Rủi Ro (Sự khác biệt của Samsung)</h3>
+            
+            <!-- 3 Pillars -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Pillar 1 -->
+                <div class="bg-dark-800 p-6 rounded-2xl border border-white/5 hover:border-purple-500/50 transition-all duration-300 hover:-translate-y-1 group">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="lock-keyhole" class="w-6 h-6 text-purple-400"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-3">1. Cổ phiếu kèm Khóa (Vesting)</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Thưởng không trả 100% tiền mặt mà bằng <strong>cổ phiếu sau thuế</strong>. 1/3 được bán ngay, 2/3 còn lại bị khóa lần lượt 1 và 2 năm.</p>
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <span class="text-xs font-bold text-purple-400 uppercase tracking-wide">Tác dụng:</span>
+                        <span class="text-xs text-slate-300 ml-1">Trói chân nhân tài dài hạn, biến họ thành cổ đông thực sự.</span>
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="bg-dark-800 p-6 rounded-2xl border border-white/5 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="trending-up" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-3">2. Neo Mục tiêu Dài hạn</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Thưởng phụ thuộc mảng nhớ đạt >200 nghìn tỷ won (2026-2028) & >100 nghìn tỷ won (2029-2035).</p>
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wide">Tác dụng:</span>
+                        <span class="text-xs text-slate-300 ml-1">Đảm bảo công ty phải làm ăn có lãi bền vững thì quỹ thưởng mới được kích hoạt.</span>
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="bg-dark-800 p-6 rounded-2xl border border-white/5 hover:border-orange-500/50 transition-all duration-300 hover:-translate-y-1 group">
+                    <div class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="pie-chart" class="w-6 h-6 text-orange-400"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-3">3. Phân bổ Cấu trúc</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Chỉ 40% quỹ thưởng dành cho lao động mảng nhớ (nơi làm ra tiền chính). 60% còn lại chia cho các khối khác của Samsung.</p>
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <span class="text-xs font-bold text-orange-400 uppercase tracking-wide">Tác dụng:</span>
+                        <span class="text-xs text-slate-300 ml-1">Tránh "nội chiến" giữa các phòng ban, xoa dịu toàn bộ tập đoàn.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real impact -->
+            <div class="mt-6 bg-slate-800/50 p-4 rounded-xl border-l-4 border-l-white flex items-center justify-between">
+                <span class="text-sm text-slate-300">Ví dụ thực tế: Kỹ sư lương 100tr Won, công ty lãi 300 ngàn tỷ Won <i data-lucide="arrow-right" class="inline w-4 h-4 mx-2"></i> Tổng đãi ngộ chạm <strong class="text-white">600 triệu Won</strong> (Gấp 6 lần lương cứng). 73.7% công đoàn đã vote YES.</span>
+            </div>
+        </section>
+
+        <!-- TAB 4: BÀI HỌC RÚT RA -->
+        <section id="content-lessons" class="hidden animate-slide-up space-y-6 max-w-4xl mx-auto">
+            
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-black text-white">Tại sao Case Study này lại là "Vàng"?</h2>
+                <p class="text-slate-400 mt-2">Framework tư duy dành cho Giám đốc Nhân sự & C&B Manager</p>
+            </div>
+
+            <!-- Lesson 1 -->
+            <div class="glass-card p-6 md:p-8 rounded-2xl flex gap-6 relative overflow-hidden group">
+                <div class="w-2 absolute left-0 top-0 bottom-0 bg-blue-500 group-hover:w-3 transition-all"></div>
+                <div class="text-5xl font-black text-dark-700/50 hidden md:block">01</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-white mb-3">Cấu trúc > Con số tuyệt đối (Tính dự đoán)</h3>
+                    <p class="text-slate-300 leading-relaxed">
+                        Đòn bẩy lớn nhất không phải tiền mặt, mà là <strong>tính có thể đoán trước</strong>. Khi giá trị tiền tương đương, nhân viên luôn chọn nơi có quy tắc được viết vào hợp đồng thay vì nơi bắt họ chờ đợi "sự cử chỉ tùy nghi" của ban lãnh đạo. Sự an tâm về cấu trúc là thứ giữ chân nhân tài tốt nhất.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Lesson 2 -->
+            <div class="glass-card p-6 md:p-8 rounded-2xl flex gap-6 relative overflow-hidden group">
+                <div class="w-2 absolute left-0 top-0 bottom-0 bg-red-500 group-hover:w-3 transition-all"></div>
+                <div class="text-5xl font-black text-dark-700/50 hidden md:block">02</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-white mb-3">Hiệu ứng Mỏ neo Thị trường (Market Anchoring)</h3>
+                    <p class="text-slate-300 leading-relaxed">
+                        Kỳ vọng của thị trường bị neo lại và không thể tháo gỡ. Một khi đối thủ (SK Hynix) thiết lập một "sàn" đãi ngộ mới (10%), toàn bộ ngành sẽ phải đọc theo luật đó. Doanh nghiệp không thể ngụy biện <em>"chúng tôi vẫn đang trả rất tốt so với năm ngoái"</em> — bởi vì nhân viên không so sánh với quá khứ của chính họ, <strong>họ so sánh với người hàng xóm</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Lesson 3 -->
+            <div class="glass-card p-6 md:p-8 rounded-2xl flex gap-6 relative overflow-hidden group">
+                <div class="w-2 absolute left-0 top-0 bottom-0 bg-emerald-500 group-hover:w-3 transition-all"></div>
+                <div class="text-5xl font-black text-dark-700/50 hidden md:block">03</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-white mb-3">Nghệ thuật "Hào phóng có kiểm soát"</h3>
+                    <p class="text-slate-300 leading-relaxed">
+                        Thiết kế đãi ngộ không phải là sự keo kiệt trá hình, mà là <strong>quản trị rủi ro tinh vi</strong>. Thay tiền mặt bằng cổ phiếu có lịch khóa (Vesting), đặt ngưỡng kích hoạt theo hiệu suất dài hạn, và phân bổ chéo các phòng ban. Mỗi điều khoản là một "van điều tiết". Đây là ranh giới giữa việc <em>"vung tiền vô tội vạ"</em> và <em>"đầu tư thông minh vào nguồn nhân lực"</em>.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Define all tab IDs
+            const contents = ['context', 'climax', 'resolution', 'lessons'];
+            
+            // Remove active states and hide contents
+            contents.forEach(id => {
+                const contentEl = document.getElementById('content-' + id);
+                const tabEl = document.getElementById('tab-' + id);
+                
+                contentEl.classList.add('hidden');
+                
+                // Reset tab styles
+                tabEl.classList.remove('nav-active');
+                tabEl.classList.add('text-slate-400');
+                tabEl.classList.remove('text-white');
+            });
+
+            // Activate selected tab
+            const activeContent = document.getElementById('content-' + tabId);
+            const activeTab = document.getElementById('tab-' + tabId);
+            
+            activeContent.classList.remove('hidden');
+            
+            // Re-trigger animations by briefly removing and adding the class
+            activeContent.classList.remove('animate-slide-up');
+            void activeContent.offsetWidth; // Trigger reflow
+            activeContent.classList.add('animate-slide-up');
+            
+            // Apply active tab styles
+            activeTab.classList.add('nav-active');
+            activeTab.classList.add('text-white');
+            activeTab.classList.remove('text-slate-400');
+        }
+    </script>
+</body>
+</html>
